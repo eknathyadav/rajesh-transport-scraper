@@ -15,8 +15,11 @@ Web Scraping in Django
    python manage.py runserver
    ```
 5. Copy http://127.0.0.1:8000/  and paste it on your browser.
-
-6. Screenshots
+6. Incase if no graphs are shown.
+```
+Please generate a new header for the api request and update the old header in main -> views.py -> showGraph.
+```
+8. Screenshots
 
 
 ![Screenshot 2022-06-06 111124](https://user-images.githubusercontent.com/48616375/172102343-46b8bfb5-353c-4d3e-85e7-c02fb77968c5.png)
