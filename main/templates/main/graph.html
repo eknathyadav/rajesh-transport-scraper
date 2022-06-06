@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Graph Details</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+      crossorigin="anonymous"
+    />
+    <style>
+      body {
+        background: ;
+        padding: 16px;
+      }
+
+      canvas {
+        border: 1px dotted red;
+        padding:10px;
+      }
+
+      .chart-container {
+        position: relative;
+        height: 70vh;
+        width: 670px;
+      }
+      p{
+        text-align:center;
+        font-weight:bold;
+        font-size:25px;
+      }
+      .highlight{
+        color:#000080;
+      }
+      .charts{
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        gap:30px;
+        
+      }
+    </style>
+  </head>
+  <body>
+    <p>Graph Representation for <span class="highlight">{{ source.source_name }}</span> to <span class="highlight">{{ destination.dest_name }} </span> Buses</p>
+    <div class="charts">
+    <div class="chart-container">
+    <canvas id="chart-seats">
+    </canvas>
+    <p>Line Chart For <span class="highlight">Available Seats</span> </p>
+    </div>
+    
+    <div class="chart-container">
+      <canvas id="chart-price"></canvas>
+      <p>Bar Chart For <span class="highlight">Average Ticket Price</span> </p>
+    </div>
+    
+  </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.js"></script>
+    <script>
+      var ctx = document.getElementById("chart-seats").getContext('2d');
+      let labels = [];
+      let seats = [];
+      {% for day,data in fetchData.items %}
+              labels.push({{ day }} + "/06/2022");
+              seats.push({{ data.1 }});
+            {% endfor %}
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: "total available seats From 6/6/2022 to 12/6/2022", // Name the series
+            data: seats, // Specify the data values array
+            fill: false,
+            borderColor: '#2196f3', // Add custom color border (Line)
+            backgroundColor: '#2196f3', // Add custom color background (Points and Fill)
+            borderWidth: 1 // Specify bar border width
+        }]},
+    options: {
+      responsive: true, // Instruct chart js to respond nicely.
+      maintainAspectRatio: false, // Add to prevent default behaviour of full-width/height 
+    }
+});
+            let prices = []
+            {% for day,data in fetchData.items %}
+              prices.push({{ data.0 }});
+            {% endfor %}
+            let graphHeading = "Average Bus Ticket Price From 6/6/2022 to 12/6/2022"
+            const data = {
+        labels: labels,
+        datasets: [{
+          label: graphHeading,
+          data: prices,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(255, 159, 64, 0.2)',
+            'rgba(255, 205, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(201, 203, 207, 0.2)'
+          ],
+          borderColor: [
+            'rgb(255, 99, 132)',
+            'rgb(255, 159, 64)',
+            'rgb(255, 205, 86)',
+            'rgb(75, 192, 192)',
+            'rgb(54, 162, 235)',
+            'rgb(153, 102, 255)',
+            'rgb(201, 203, 207)'
+          ],
+          borderWidth: 1
+        }]
+      };
+            var options = {
+              maintainAspectRatio: false,
+              scales: {
+                y: {
+                  stacked: true,
+                  grid: {
+                    display: true,
+                    color: "rgba(255,99,132,0.2)",
+                  },
+                },
+                x: {
+                  grid: {
+                    display: false,
+                  },
+                },
+              },
+            };
+
+            new Chart("chart-price", {
+              type: "bar",
+              options: options,
+              data: data,
+            });
+    </script>
+  </body>
+</html>
