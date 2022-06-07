@@ -39,7 +39,7 @@ def showGraph(request, source_id, dest_id):
     source = Source.objects.get(source_code=source_id)
     destination = Destination.objects.filter(dest_code=dest_id)[0]
     d = {}
-    for day in range(6, 13):
+    for day in range(7, 13):
         url = "https://www.rajeshtransports.in/search/search-list"
         if day < 10:
             day = "0" + str(day)
@@ -56,14 +56,12 @@ def showGraph(request, source_id, dest_id):
             'Sec-Fetch-Dest': 'empty',
             'Sec-Fetch-Mode': 'cors',
             'Sec-Fetch-Site': 'same-origin',
-            'Referer': 'https://www.rajeshtransports.in/search/bangalore-to-ongole?fromStationCode=STF3OEX206&toStationCode=ST198B2496N&onwardDate=2022-06-09',
+            'Referer': 'https://www.rajeshtransports.in/search/bangalore-to-guntur?fromStationCode=STF3OEX206&toStationCode=ST378E647H&onwardDate=2022-06-07',
             'Connection': 'keep-alive',
-            'Cookie': 'recent-search=%5B%22STF3OEX206%22%2C%22ST198B2496N%22%2C%222022-06-09%22%5D; ci_session=a01jh57ui2pfcmik2vq4ie1qvrb17aqa; ci_session=a01jh57ui2pfcmik2vq4ie1qvrb17aqa'
+            'Cookie': 'recent-search=%5B%22STF3OEX206%22%2C%22ST378E647H%22%2C%222022-06-07%22%5D; ci_session=tgt8ktjstp6o85s7j1g9e8o3pj45jaud; ci_session=b9747tv2al15eksqpvffoepi52b6dlqf'
         }
         response = requests.request("POST", url, headers=headers, data=payload)
-
         json_data = json.loads(response.text)
-        print(response.text)
         try:
             if len(json_data["data"]) == 0:
                 d[day] = "Not Available"
@@ -72,14 +70,13 @@ def showGraph(request, source_id, dest_id):
                 totalSeats = 0
                 for root in json_data["data"]:
                     for seatType in root['stageFare']:
-                        print(seatType['fare'], seatType['availableSeatCount'])
                         totalCost += int(seatType['fare']) * \
-                            int(seatType['availableSeatCount'])
+                            (int(seatType['availableSeatCount']))
                         totalSeats += int(seatType['availableSeatCount'])
                 d[day] = [totalCost//totalSeats, totalSeats]
         except:
             d[day] = "Not Available"
-
+    print(d)
     context = {"fetchData": d,
                'source': source,
                'destination': destination
